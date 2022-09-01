@@ -1,0 +1,45 @@
+include:
+    #- template: Jobs/SAST.gitlab-ci.yml
+    - template: Security/Dependency-Scanning.gitlab-ci.yml
+
+
+stages:
+    - deploy
+    - test
+  
+
+dependency_scanning:
+    stage: test
+
+deploy:
+    stage: deploy
+    
+       
+    script:
+        - kubectl apply -f namespace/namespace.yaml
+        - kubectl apply -f adservice/adservice.yaml 
+        - kubectl apply -f cartservice/cartservice.yaml
+        - kubectl apply -f checkoutservice/checkoutservice.yaml
+        - kubectl apply -f currencyservice/currencyservice.yaml
+        - kubectl apply -f emailservice/emailservice.yaml
+        - kubectl apply -f frontend/frontend.yaml
+        - kubectl apply -f loadgenerator/loadgenerator.yaml
+        - kubectl apply -f paymentservice/paymentservice.yaml
+        - kubectl apply -f productcatalogservice/productcatalogservice.yaml
+        - kubectl apply -f recommendationservice/recommendationservice.yaml
+        - kubectl apply -f redis/redis.yaml
+        - kubectl apply -f shippingservice/shippingservice.yaml
+        - kubectl get pods --namespace=boutique-shop
+        - kubectl get services --namespace=boutique-shop
+  
+        
+
+    #needs:
+        #- project: app-deployment/harvester-rk8s-terraform-machines
+        #  job: Deploy:apply
+        #  ref: vms
+          #artifacts: true
+    tags:
+        - docker
+
+
